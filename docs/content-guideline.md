@@ -76,6 +76,21 @@ style guide. One question is cheaper than a review round.
 - The visual novels adapted from the sites keep the same basis for every line they teach, and do not add rules the
   site does not state.
 
+## 7. What generated work tends to get wrong
+
+The operator's observation (2026-11-22): "Dynamic workflows circle back to US cultural habits and English idioms.
+Ad hoc generated code repeats the current idea and readability is poor / code nearly obfuscated. Generated content
+would require multiple rounds of verification." So:
+
+- **Assume drift.** Each workflow inherits the previous workflow's style guide; check new rules and repeated phrasing
+  against a Finnish basis and section 4, not against earlier output.
+- **No ad hoc code that stays.** A check worth repeating becomes engine code with tests, plain names and comments that
+  say why; one-off scripts are deleted after use. Checks are deterministic (hashes, counts, parsing), never a keyword
+  list that decides meaning.
+- **Plan several verification rounds** by different agents, each against the basis, and the operator's review for
+  language and cultural norms. One judge's acceptance is not the end of review.
+- The process notes are in `docs/diary/2026-11-22-process-lessons.md`.
+
 ## Changes
 
 - 2026-11-22: first version (lukio-runko v0.4.0), after the person-first case (lukion-terveystieto D-012). The operator
@@ -84,3 +99,4 @@ style guide. One question is cheaper than a review round.
 - 2026-11-22: the watch list names US-style safety blocks and content notes; one help block only, in the terveystieto
   mental-health chapter ("remove the unrelated safety block - it is US cultural thing"; "remove the content notes
   too… otherwise never repeat").
+- 2026-11-22: section 7, what generated work tends to get wrong (the operator's notes).
