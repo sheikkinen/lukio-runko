@@ -55,9 +55,10 @@ These come easily to a model trained mostly on English, and are not Finnish norm
 - **Graded verdicts on value questions** ("paras vastaus on…" where the curriculum asks for weighing).
 - **Calques** of English phrasing (*ottaa paikkaa* for "take place", *tehdä järkeä*, *olla kiinnostunut sisään*), and
   English sentence rhythm in Finnish text.
-- **US-style safety apparatus:** help or crisis blocks ("Apua ja tukea" with 112 and helplines) on pages that do
-  not need them. In Finnish practice such a block is rarely needed. It belongs only on terveystieto pages that
-  discuss death, suicide or political violence; other sites and pages carry none (operator, 2026-11-22).
+- **US-style safety apparatus:** help or crisis blocks ("Apua ja tukea" with 112 and helplines) and content notes
+  (trigger warnings). In Finnish practice they are rarely needed. No site carries them, except one help block in the
+  single terveystieto chapter about mental health, never repeated elsewhere; a single mention of suicide on a page is
+  not a reason for a block (operator, 2026-11-22).
 - **Imported norms** presented as Finnish practice (US school conventions, US legal or health categories) without a
   Finnish source.
 
@@ -80,5 +81,6 @@ style guide. One question is cheaper than a review round.
 - 2026-11-22: first version (lukio-runko v0.4.0), after the person-first case (lukion-terveystieto D-012). The operator
   approved the four points relayed from the game-engine review ("proceed as proposed") and the audit ("Guideline and
   audit").
-- 2026-11-22: the watch list names US-style safety blocks; help blocks only on terveystieto pages about death,
-  suicide or political violence ("remove the unrelated safety block - it is US cultural thing").
+- 2026-11-22: the watch list names US-style safety blocks and content notes; one help block only, in the terveystieto
+  mental-health chapter ("remove the unrelated safety block - it is US cultural thing"; "remove the content notes
+  too… otherwise never repeat").
