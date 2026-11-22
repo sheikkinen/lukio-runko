@@ -42,3 +42,6 @@ claim that needs a Finnish basis.
 
 **Seed:** Should each site's first brief ask the operator for a short list of Finnish norms (wording, safety
 practice, tone) before any style guide is written?
+
+**Seed answered** (operator [O], 2026-11-22): "this is context and grounding". The Finnish norms are not a style
+preference to collect later; they are the context every brief starts from and the ground every check tests against.
