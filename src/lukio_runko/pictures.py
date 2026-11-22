@@ -30,6 +30,13 @@ MODELS = ("nano-banana", "klein", "p-image")  # p-image: D-009, when the local k
 KLEIN_ASPECTS = ("9:16", "3:4", "16:9", "1:1")  # the sizes game-engine's klein.py can draw
 MANIFEST = "data/images.yaml"
 MANIFEST_PARTS = (MANIFEST, "data/images-illustrations.yaml")  # the style line and diagrams, then the illustrations
+
+
+def manifest_parts(root: Path) -> list[str]:
+    """data/images.yaml first, then data/images-illustrations.yaml, then any other data/images-*.yaml in name order
+    (a site adds files as each one reaches the 500-line limit). The run log, data/images.run.yaml, is not a part."""
+    extra = sorted(p.name for p in (root / "data").glob("images-*.yaml") if p.name != "images-illustrations.yaml")
+    return [*MANIFEST_PARTS, *(f"data/{name}" for name in extra)]
 IMG_DIR = "site-src/img"
 RUN_LOG = "data/images.run.yaml"
 REQUIRED = ("id", "kind", "model", "aspect", "prompt", "page", "placement")
@@ -131,7 +138,7 @@ def load_manifest(root: Path) -> tuple[Manifest, list[str]]:
     """The manifest from all its files (each stays under the 500-line limit); the first `style` line wins."""
     merged: dict = {"images": []}
     found = False
-    for name in MANIFEST_PARTS:
+    for name in manifest_parts(root):
         path = root / name
         if not path.exists():
             continue

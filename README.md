@@ -12,7 +12,7 @@ browser, and loads nothing from other hosts.
 ## Install
 
 ```bash
-python -m pip install "lukio-runko @ git+https://github.com/sheikkinen/lukio-runko@v0.2.0"
+python -m pip install "lukio-runko @ git+https://github.com/sheikkinen/lukio-runko@v0.3.0"
 ```
 
 A subject site pins a tag in its `requirements.txt`. For work on the engine itself, clone it and install it
@@ -74,6 +74,9 @@ Optional in v0.2.0:
   "Opiskelijan näkymä" and "Tuntisuunnitelma". Each url must be https and listed in `official_links`;
 - a picture entry may carry a `commons` block (`credit`, `work` and its source record) for a public-domain artwork;
   the credit and the work are shown as the figure caption.
+
+New in v0.3.0: the picture manifest is read from `data/images.yaml`, then `data/images-illustrations.yaml`, then any
+other `data/images-*.yaml` in name order, so a site adds a file when one reaches the 500-line limit.
 
 ## Workflow templates
 

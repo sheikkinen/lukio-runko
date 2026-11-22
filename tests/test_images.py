@@ -336,3 +336,16 @@ def test_commons_credit_becomes_a_visible_figcaption():
     entry, errors = images.parse_entry(raw, 1)
     assert not errors
     assert entry.credit == "Kuva: Wikimedia Commons, julkinen omaisuus. A. Artist, Work (1600)"
+
+
+def test_manifest_reads_every_images_part_in_order(tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    entry = 'images:\n  - {id: %s, kind: illustration, model: nano-banana, aspect: "16:9", prompt: "x", page: front, placement: header, decorative: true}\n'
+    (data / "images.yaml").write_text("style: s\n" + entry % "a", encoding="utf-8")
+    (data / "images-illustrations.yaml").write_text(entry % "b", encoding="utf-8")
+    (data / "images-fi3.yaml").write_text(entry % "c", encoding="utf-8")
+    (data / "images.run.yaml").write_text("- {id: z}\n", encoding="utf-8")
+    manifest, errors = images.load_manifest(tmp_path)
+    assert not errors
+    assert [e.id for e in manifest.entries] == ["a", "b", "c"]
