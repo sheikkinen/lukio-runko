@@ -371,6 +371,24 @@ def check_body_links(topic: Document, facts: dict[str, dict] | None) -> list[Pro
     return problems
 
 
+def check_card_links(topic: Document) -> list[Problem]:
+    """card_links: a list of {label, url}; each url is https and listed in official_links (which carry read dates)."""
+    links = topic.meta.get("card_links")
+    if links is None:
+        return []
+    line = topic.line_of("card_links")
+    if not isinstance(links, list):
+        return [Problem(topic.path, line, "card_links must be a list of {label, url}", "front-matter")]
+    allowed = {_normal_url(link.get("url", "")) for link in topic.meta.get("official_links") or [] if isinstance(link, dict)}
+    problems = []
+    for item in links:
+        if not isinstance(item, dict) or not item.get("label") or not str(item.get("url", "")).startswith("https://"):
+            problems.append(Problem(topic.path, line, "card_links entries need a label and an https url", "front-matter"))
+        elif _normal_url(item["url"]) not in allowed:
+            problems.append(Problem(topic.path, line, f"card link {item['url']} has no read date: add it to official_links", "link-date"))
+    return problems
+
+
 def _normal_url(url: str) -> str:
     return str(url).strip().rstrip("/").lower()
 
@@ -389,5 +407,6 @@ def check_topic(topic: Topic, known_codes: set[str], facts: dict[str, dict] | No
     problems += check_yearly_fact_keys(topic, facts)
     problems += check_yearly_figures(topic, facts)
     problems += check_body_links(topic, facts)
+    problems += check_card_links(topic)
     problems += check_lengths(topic)
     return problems

@@ -12,7 +12,7 @@ browser, and loads nothing from other hosts.
 ## Install
 
 ```bash
-python -m pip install "lukio-runko @ git+https://github.com/sheikkinen/lukio-runko@v0.1.0"
+python -m pip install "lukio-runko @ git+https://github.com/sheikkinen/lukio-runko@v0.2.0"
 ```
 
 A subject site pins a tag in its `requirements.txt`. For work on the engine itself, clone it and install it
@@ -68,6 +68,12 @@ them. `@SITE_NAME@` and `@STORAGE_KEY@` in any copied `.js` or `.css` file are f
   with the same heading, in the same order). The build checks both.
 
 `tests/fixtures/site/subject.yaml` is a complete example (the opinto-ohjaus subject).
+
+Optional in v0.2.0:
+- a topic's front matter may list `card_links: [{label, url}]`: extra links shown on the topic's card beside
+  "Opiskelijan näkymä" and "Tuntisuunnitelma". Each url must be https and listed in `official_links`;
+- a picture entry may carry a `commons` block (`credit`, `work` and its source record) for a public-domain artwork;
+  the credit and the work are shown as the figure caption.
 
 ## Workflow templates
 

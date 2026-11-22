@@ -19,6 +19,15 @@ def topic_link(ctx: Ctx, topic: Topic, suffix: str = "", text: str | None = None
     return f'<a href="{ctx.link(topic.url_dir + suffix)}">{esc(label)}</a>'
 
 
+def card_links(topic: Topic) -> str:
+    """Optional extra links on a topic card, from the front matter: card_links: [{label, url}]."""
+    out = []
+    for item in topic.meta.get("card_links") or []:
+        if isinstance(item, dict) and item.get("label") and str(item.get("url", "")).startswith("https://"):
+            out.append(f' <a href="{esc(item["url"])}">{esc(item["label"])}</a>')
+    return "".join(out)
+
+
 def codes_list(ctx: Ctx, data: SiteData, module: str, kind: str) -> str:
     """The exact objectives or contents of a module, each with the topics that serve it."""
     items = []
@@ -77,7 +86,7 @@ def topic_cards(ctx: Ctx, data: SiteData, module: str) -> str:
             f'<p class="small">{esc(timing_text(topic))} · {esc(ROLE_LABELS.get(topic.meta.get("role"), ""))} · '
             f"tunti {esc(durations)} min · itseopiskelu noin {esc(topic.meta.get('self_study_minutes'))} min</p>\n"
             f'<p class="links">{topic_link(ctx, topic, text="Opiskelijan näkymä")} '
-            f"{topic_link(ctx, topic, '/tunti', 'Tuntisuunnitelma')}</p></li>"
+            f"{topic_link(ctx, topic, '/tunti', 'Tuntisuunnitelma')}{card_links(topic)}</p></li>"
         )
     return f'<ol class="topic-list">\n{chr(10).join(items)}\n</ol>'
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lukio-runko"
-version = "0.1.0"
+version = "0.2.0"
 description = "Shared engine that builds a static site for a Finnish upper secondary school (lukio) subject from its subject.yaml"
 readme = "README.md"
 license = { file = "LICENSE" }

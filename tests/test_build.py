@@ -138,3 +138,17 @@ def test_declared_extra_field_is_shown_and_undeclared_is_not(tmp_path):
     (root / "subject.yaml").write_text(text[:start] + text[end:], encoding="utf-8")
     assert errors(build_site(root, out, today=TODAY)) == []
     assert "HOPS-osa" not in _meta_rows(out, "op1/01-testi/index.html")
+
+
+def test_card_links_show_on_the_topic_card_and_need_a_read_date(tmp_path):
+    root = make_root(tmp_path)
+    codes = list(yaml.safe_load((root / "data" / "curriculum.yaml").read_text(encoding="utf-8"))["codes"])
+    url = "https://example.org/tarina?ch=1"
+    links = [{"title": "Tarina", "url": url, "publisher": "Esimerkki", "read": TODAY.isoformat()}]
+    write_topic(root, curriculum=codes, card_links=[{"label": "Visual novel", "url": url}], official_links=links)
+    out = root / "_site"
+    assert errors(build_site(root, out, today=TODAY)) == []
+    card = (out / "op1" / "index.html").read_text(encoding="utf-8")
+    assert '<a href="https://example.org/tarina?ch=1">Visual novel</a>' in card
+    write_topic(root, curriculum=codes, card_links=[{"label": "Visual novel", "url": url}], official_links=[])
+    assert any("card link" in p.message for p in errors(build_site(root, out, today=TODAY)))
