@@ -325,3 +325,14 @@ def test_diagram_caps_and_lesson_placement():
     html_ = images.diagrams(Ctx(), "t1")
     assert "s.webp" in html_ and "h.webp" not in html_
     assert images.sections(Ctx(), "t1", {}, diagrams=False) == {}
+
+
+def test_commons_credit_becomes_a_visible_figcaption():
+    raw = {
+        "id": "pd-x", "kind": "illustration", "model": "nano-banana", "aspect": "3:4", "prompt": "Not generated.",
+        "page": "front", "placement": "header", "decorative": True,
+        "commons": {"credit": "Kuva: Wikimedia Commons, julkinen omaisuus", "work": "A. Artist, Work (1600)"},
+    }
+    entry, errors = images.parse_entry(raw, 1)
+    assert not errors
+    assert entry.credit == "Kuva: Wikimedia Commons, julkinen omaisuus. A. Artist, Work (1600)"

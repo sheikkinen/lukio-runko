@@ -50,6 +50,7 @@ class Entry:
     facts_from: str = ""
     fallback: str = ""
     seed: int | None = None
+    credit: str = ""  # from the `commons` block of a public-domain artwork: credit line and work (with artist)
 
 
 @dataclass
@@ -59,6 +60,15 @@ class Manifest:
 
     def by_id(self) -> dict[str, Entry]:
         return {e.id: e for e in self.entries}
+
+
+def commons_credit(block: object) -> str:
+    """The visible credit of a public-domain artwork: the credit line, then the work and its artist."""
+    if not isinstance(block, dict) or not block.get("credit"):
+        return ""
+    line = str(block["credit"]).strip().rstrip(".")
+    work = str(block.get("work") or "").strip()
+    return f"{line}. {work}" if work else line
 
 
 def parse_entry(raw: object, position: int) -> tuple[Entry | None, list[str]]:
@@ -96,6 +106,7 @@ def parse_entry(raw: object, position: int) -> tuple[Entry | None, list[str]]:
         facts_from=str(raw.get("facts_from") or ""),
         fallback=str(raw.get("fallback") or ""),
         seed=seed if isinstance(seed, int) else None,
+        credit=commons_credit(raw.get("commons")),
     )
     return entry, []
 
@@ -221,6 +232,8 @@ def figure(ctx: Ctx, pic: Picture) -> str:
     entry = pic.entry
     href = esc(ctx.asset("img/" + pic.filename))
     img = f'<img src="{href}" alt="{esc(entry.alt)}" width="{pic.width}" height="{pic.height}" loading="lazy">'
+    if entry.credit:
+        return f'<figure class="picture picture-{entry.kind}">{img}<figcaption class="picture-credit">{esc(entry.credit)}</figcaption></figure>'
     if entry.kind != "diagram":
         return f'<figure class="picture picture-{entry.kind}">{img}</figure>'
     caption = f'<figcaption><a href="{href}">Avaa kuva suurempana</a> (kuva avautuu omalle sivulleen, ja sitä voi lähentää)</figcaption>'
