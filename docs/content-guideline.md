@@ -44,6 +44,9 @@ records a source or translation as checked, and only for what it opened.
 
 ## 4. Watch list of English habits
 
+The cases are kept, with their Finnish practice, level and basis, in the norm ledger, `docs/norm-ledger.md`: the
+context every brief starts from and the ground every check tests against.
+
 These come easily to a model trained mostly on English, and are not Finnish norms. Checkers look for them:
 
 - **Person-first etiquette as a rule** ("henkilö, jolla on…", "henkilö ensin"). Plain neutral Finnish is fine:
@@ -63,6 +66,8 @@ These come easily to a model trained mostly on English, and are not Finnish norm
   Finnish source.
 
 ## 5. Ask early on language and norms
+
+An answer from the operator becomes a row in the norm ledger, with the operator's words as its basis.
 
 A rule about Finnish usage, etiquette or a social norm goes to the operator, a Finnish speaker, before it enters a
 style guide. One question is cheaper than a review round.
@@ -100,3 +105,4 @@ would require multiple rounds of verification." So:
   mental-health chapter ("remove the unrelated safety block - it is US cultural thing"; "remove the content notes
   too… otherwise never repeat").
 - 2026-11-22: section 7, what generated work tends to get wrong (the operator's notes).
+- 2026-11-22: the norm ledger, `docs/norm-ledger.md`, linked from sections 4 and 5.
