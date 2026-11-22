@@ -1,4 +1,4 @@
-# Repeat check: plan (2026-11-22, not implemented yet)
+# Repeat check: plan (2026-11-22, implemented the same day; see Implementation notes)
 
 ## Goal
 
@@ -70,10 +70,14 @@ Intended repeats live in the site file `data/allowed-repeats.yaml`:
 
 - The match is on `hash` only. `text` is there for review and must normalise to that hash, or the
   entry is an error. A reworded line has a different hash, so it is never allowed silently.
-- `reason` and `max_groups` are required; growth past `max_groups` is reported. A near-tier
+- `text` must have at least `min_words` words once normalised, or the entry is an error: a shorter
+  text is never counted, so it needs no entry and such an entry could never match.
+- `reason` and `max_groups` are required. An allowed text found in more topic groups than its
+  `max_groups` is reported as grown, also when it stays below the report threshold. A near-tier
   variant of an allowed text is reported as drift. An entry that matches nothing is stale.
-- Structural headings and labels (for example "Malliksi kelpaava vastaus") are allowed the same
-  way, one entry each. There is no blanket allowance by tag or region, because a boilerplate
+- Structural headings and labels of `min_words` words or more (for example "Esimerkki malliksi
+  kelpaavasta vastauksesta") are allowed the same way, one entry each. Shorter labels such as
+  "Malliksi kelpaava vastaus" are below `min_words` and are never reported. There is no blanket allowance by tag or region, because a boilerplate
   sentence put in a heading would be hidden.
 
 ## Outputs
@@ -110,7 +114,7 @@ uses the standard library only.
 - A one-word slot variant forms a near cluster; a short unit does not. Two runs with different
   `PYTHONHASHSEED` values give identical JSON; error mode turns new clusters into errors.
 - Allow-list: an allowed hash is silent; a reworded copy is drift; growth past `max_groups` is
-  reported; a stale entry and a text/hash mismatch are errors.
+  reported; a stale entry is a warning (an error with `fail_on_new`), and a text/hash mismatch is an error.
 
 ## Rollout per site
 
@@ -147,3 +151,20 @@ Builds with 0 errors and 0 warnings, `tulosta/` excluded. Order: opinto / tervey
   "Lukiolaisella on oikeus oppimisen tukeen" on 37 of 44 opinto-ohjaus pages; the 112 referral on
   61 terveystieto pages; the self-assessment scale on 18 / 30 / 40 pages; and slot-filled task
   wrappers ("Helpompi polku: ...", "Aika: N min Tarvitset: ...") on 16 to 29 pages.
+
+## Implementation notes (2026-11-22)
+
+Code: `html_units.py`, `textsig.py`, `allowed_repeats.py`, `repeat_checks.py`, and `repeat_report.py` for the
+command (split off to keep each file well under 500 lines). Where the code settles a point the plan left open:
+
+- A digit run joins the letters around it, so `OP1.s1` is the two words `op<n> s<n>`, not four.
+- Shingles are hashed with `zlib.crc32`; the one MinHash permutation is `(a*h + b) mod 2^61-1` with `a` and `b`
+  taken from a fixed SHA-256 digest. Empty bins borrow from the next filled bin (rotation densification).
+- "Stamped" (`stamped_share`) is a label on a cluster and a count in the summary. An allowed text is never an error
+  for being stamped; with `fail_on_new` every new cluster is an error anyway.
+- A near cluster is listed when its variants together reach the threshold and cover more topic groups than any one
+  variant. Near clusters give no build problem; drift (a near variant of an allowed text) does.
+- Stale entries are warnings, errors with `fail_on_new`. A broken allow-list entry (unknown or missing key, text that
+  does not normalise to its hash, a hash listed twice) is always an error (kind `repeat-allow-list`) and allows
+  nothing.
+- The command takes `--site DIR` and `--fresh` besides `--json [FILE]` and `--suggest-allow`.

@@ -53,6 +53,24 @@ class ExtraField:
 
 
 @dataclass(frozen=True)
+class RepeatSettings:
+    """subject.yaml `repeats:`, the thresholds of the repeat check (docs/repeat-check-plan.md). Every key is optional.
+
+    A unit is reported when it is found in `min_share` of the topic groups, but never in fewer than `min_groups`.
+    A unit in `stamped_share` of the groups or more is called stamped. `fail_on_new` turns the check's warnings into
+    errors, once a site has cleaned up its repeats.
+    """
+
+    min_share: float = 0.10
+    min_groups: int = 3
+    stamped_share: float = 0.50
+    near_jaccard: float = 0.8
+    min_words: int = 4
+    near_min_words: int = 8
+    fail_on_new: bool = False
+
+
+@dataclass(frozen=True)
 class Subject:
     name: str
     short_name: str
@@ -73,6 +91,7 @@ class Subject:
     assessment_label: str
     sections: tuple[SectionSpec, ...]
     extra_fields: tuple[ExtraField, ...] = ()
+    repeats: RepeatSettings = RepeatSettings()
     code_pattern: re.Pattern = field(init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
@@ -171,6 +190,36 @@ def parse_extra_fields(topics: object) -> tuple[ExtraField, ...]:
     return tuple(fields)
 
 
+REPEAT_SHARES = ("min_share", "stamped_share", "near_jaccard")  # a fraction above 0 and at most 1
+REPEAT_COUNTS = ("min_groups", "min_words", "near_min_words")  # a whole number of at least 1
+REPEAT_SWITCHES = ("fail_on_new",)
+
+
+def parse_repeats(raw: object) -> RepeatSettings:
+    """subject.yaml `repeats:`; a missing block gives the defaults, an unknown key or a wrong type is an error."""
+    if raw is None:
+        return RepeatSettings()
+    if not isinstance(raw, dict):
+        raise SubjectError(f"{SUBJECT_FILE}: repeats must be a mapping")
+    values: dict[str, object] = {}
+    for key, value in raw.items():
+        if key in REPEAT_SHARES:
+            if isinstance(value, bool) or not isinstance(value, int | float) or not 0 < value <= 1:
+                raise SubjectError(f"{SUBJECT_FILE}: repeats.{key} must be a number above 0 and at most 1, found {value!r}")
+            values[key] = float(value)
+        elif key in REPEAT_COUNTS:
+            if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                raise SubjectError(f"{SUBJECT_FILE}: repeats.{key} must be a whole number of at least 1, found {value!r}")
+            values[key] = value
+        elif key in REPEAT_SWITCHES:
+            if not isinstance(value, bool):
+                raise SubjectError(f"{SUBJECT_FILE}: repeats.{key} must be true or false, found {value!r}")
+            values[key] = value
+        else:
+            raise SubjectError(f"{SUBJECT_FILE}: repeats.{key} is not a known setting")
+    return RepeatSettings(**values)
+
+
 def parse_subject(raw: object) -> Subject:
     if not isinstance(raw, dict):
         raise SubjectError(f"{SUBJECT_FILE} must be a mapping")
@@ -206,6 +255,7 @@ def parse_subject(raw: object) -> Subject:
         assessment_label=label,
         sections=sections,
         extra_fields=parse_extra_fields(raw["topics"]),
+        repeats=parse_repeats(raw.get("repeats")),
     )
 
 

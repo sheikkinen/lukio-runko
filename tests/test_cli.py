@@ -10,7 +10,7 @@ from tests.helpers import TODAY, all_codes_topic, make_root
 def test_usage_lists_the_commands(capsys):
     assert cli.main([]) == 2
     out = capsys.readouterr().out
-    assert all(name in out for name in ("build", "fetch-curriculum", "images", "compare"))
+    assert all(name in out for name in ("build", "fetch-curriculum", "images", "repeats", "compare"))
     assert cli.main(["--version"]) == 0
     assert __version__ in capsys.readouterr().out
 

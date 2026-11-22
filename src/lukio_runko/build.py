@@ -15,7 +15,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from lukio_runko import checks, pictures, sitemap, views_site, views_topic
+from lukio_runko import checks, pictures, repeat_checks, sitemap, views_site, views_topic
 from lukio_runko.layout import SiteData
 from lukio_runko.loaders import load_curriculum, load_pages, load_topics, load_yearly_facts
 from lukio_runko.models import Problem
@@ -25,7 +25,8 @@ ENGINE_DIR = Path(__file__).resolve().parent
 ENGINE_ASSETS = ENGINE_DIR / "assets"  # the engine's scripts and stylesheets; the site's own site-src/ is copied over them
 ASSET_TOKENS = {"@SITE_NAME@": "name", "@STORAGE_KEY@": "storage_key"}  # filled in the copied .js and .css files
 REQUIRED_PAGES = ("etusivu", "opetussuunnitelma", "lahteet", "polku", "tietosuoja", "saavutettavuus")
-PARTIAL_KINDS = {"coverage", "facts-file", "prerequisite"}
+PARTIAL_KINDS = {"coverage", "facts-file", "prerequisite", "repeat"}
+REPEAT_REPORT = "repeats.json"  # written beside the output folder, not inside it, so it is never published
 STATIC_PAGES = {
     # page file: (output directory, current nav item, needs the progress script)
     "etusivu": ("", "", False),
@@ -113,8 +114,19 @@ def templates_dir(root: Path) -> Path:
     return own if (own / "base.html").is_file() else ENGINE_DIR / "templates"
 
 
-def build_site(root: Path, out: Path, partial: bool = False, today: date | None = None) -> list[Problem]:
-    """Build the site and return every problem found (errors and warnings)."""
+def run_repeat_check_on(root: Path, out: Path, subject: Subject) -> list[Problem]:
+    """The repeat check on the finished HTML: prints its summary line and writes repeats.json beside the output."""
+    result = repeat_checks.check_repeats(out, subject, root)
+    repeat_checks.write_report(out.parent / REPEAT_REPORT, result.report)
+    print(result.summary)
+    return result.problems
+
+
+def build_site(root: Path, out: Path, partial: bool = False, today: date | None = None, run_repeat_check: bool = True) -> list[Problem]:
+    """Build the site and return every problem found (errors and warnings).
+
+    `run_repeat_check=False` leaves out the repeat check; `lukio-runko repeats` uses it when it builds a scratch copy.
+    """
     subject = load_subject(root)
     today = today or today_date(subject)
     curriculum = load_curriculum(root)
@@ -141,6 +153,8 @@ def build_site(root: Path, out: Path, partial: bool = False, today: date | None 
         sitemap.write_sitemap(out, today, sitemap.site_url(subject))
         problems += checks.check_external_resources(out)
         problems += checks.check_internal_links_and_headings(out)
+        if run_repeat_check:
+            problems += run_repeat_check_on(root, out, subject)
     if partial:
         problems = [p.as_warning() if p.kind in PARTIAL_KINDS else p for p in problems]
     return problems

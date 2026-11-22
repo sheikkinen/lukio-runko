@@ -1,7 +1,7 @@
-"""The lukio-runko command: lukio-runko <build|fetch-curriculum|images|compare> [options]
+"""The lukio-runko command: lukio-runko <build|fetch-curriculum|images|repeats|compare> [options]
 
-Each subcommand takes its own options; `lukio-runko <subcommand> --help` lists them. build, fetch-curriculum and
-images take --root, the site folder that holds subject.yaml (default: the current folder).
+Each subcommand takes its own options; `lukio-runko <subcommand> --help` lists them. build, fetch-curriculum,
+images and repeats take --root, the site folder that holds subject.yaml (default: the current folder).
 """
 
 from __future__ import annotations
@@ -30,6 +30,12 @@ def _images(argv: list[str]) -> int:
     return main(argv)
 
 
+def _repeats(argv: list[str]) -> int:
+    from lukio_runko.repeat_report import main
+
+    return main(argv)
+
+
 def _compare(argv: list[str]) -> int:
     from lukio_runko.compare_sites import main
 
@@ -40,6 +46,7 @@ COMMANDS: dict[str, tuple[Callable[[list[str]], int], str]] = {
     "build": (_build, "build the site into <root>/_site and run every check"),
     "fetch-curriculum": (_fetch, "fetch the curriculum from ePerusteet into <root>/data/curriculum.yaml"),
     "images": (_images, "make the site's pictures from data/images*.yaml (needs GAME_ENGINE_DIR)"),
+    "repeats": (_repeats, "report text that repeats across the built site's pages (read-only)"),
     "compare": (_compare, "compare two built sites byte for byte: compare GOLDEN BUILT"),
 }
 

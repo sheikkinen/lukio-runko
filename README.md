@@ -12,7 +12,7 @@ browser, and loads nothing from other hosts.
 ## Install
 
 ```bash
-python -m pip install "lukio-runko @ git+https://github.com/sheikkinen/lukio-runko@v0.4.0"
+python -m pip install "lukio-runko @ git+https://github.com/sheikkinen/lukio-runko@v0.5.0"
 ```
 
 A subject site pins a tag in its `requirements.txt`. For work on the engine itself, clone it and install it
@@ -27,6 +27,7 @@ lukio-runko build                  # writes _site/ and runs every check; exits 1
 lukio-runko build --partial        # while writing: coverage and missing facts are warnings
 lukio-runko fetch-curriculum       # reads ePerusteet into data/curriculum.yaml
 lukio-runko images --dry-run       # plans the pictures in data/images*.yaml
+lukio-runko repeats                # reports text that repeats across the built pages (read-only)
 lukio-runko compare GOLDEN BUILT   # compares two built sites byte for byte
 ```
 
@@ -80,6 +81,27 @@ claim names its basis; value questions as weighing; review against the basis; a 
 
 New in v0.3.0: the picture manifest is read from `data/images.yaml`, then `data/images-illustrations.yaml`, then any
 other `data/images-*.yaml` in name order, so a site adds a file when one reaches the 500-line limit.
+
+## Repeat check
+
+Every build also looks for sentences and paragraphs that repeat across the site's pages: template boilerplate,
+warnings and reassurances stamped on every topic. It reads the built HTML (print pages under `tulosta/` left out),
+counts a topic's student and lesson page as one topic, and compares normalised text by SHA-256 (exact) and by MinHash
+confirmed with exact Jaccard (near-exact). It uses no meaning, no keyword list and no randomness, so the same site
+always gives the same result. The build prints one `repeats:` summary line, warns once per repeated text found in 10%
+of the topics (at least 3), and writes the full report to `repeats.json` beside the output folder (for the default
+build, `<root>/repeats.json`). The method and its numbers are in `docs/repeat-check-plan.md`.
+
+- Intended repeats go in `data/allowed-repeats.yaml`, one entry per exact text: `hash`, `text` (must normalise to the
+  hash and have at least `min_words` words), `reason` and `max_groups`. A reworded copy (drift), growth past
+  `max_groups` (also below the report threshold) and an entry that matches nothing (stale) are reported.
+- `subject.yaml` may set `repeats:` with `min_share`, `min_groups`, `stamped_share`, `near_jaccard`, `min_words`,
+  `near_min_words` and `fail_on_new`. With `fail_on_new: true` the warnings become errors and fail the build;
+  `--partial` turns them back into warnings.
+- `lukio-runko repeats` reads `<root>/_site` (or `--site DIR`), or builds a temporary copy when there is none or with
+  `--fresh`; it never changes the site. `--json FILE` writes the report, `--json` alone prints it, and
+  `--suggest-allow` prints the new repeats as allow-list entries with an empty reason, for a person to fill in or
+  reject.
 
 ## Workflow templates
 

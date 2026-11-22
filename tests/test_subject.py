@@ -171,3 +171,30 @@ def test_extra_fields_are_read_and_optional():
     raw["topics"]["extra_fields"] = [{"key": "x"}]
     with pytest.raises(SubjectError, match="label is missing"):
         parse_subject(raw)
+
+
+def test_repeat_settings_default_and_override():
+    assert SUBJECT.repeats.min_share == 0.10 and SUBJECT.repeats.min_groups == 3 and not SUBJECT.repeats.fail_on_new
+    raw = copy.deepcopy(RAW)
+    raw["repeats"] = {"min_share": 0.2, "near_min_words": 10, "fail_on_new": True}
+    settings = parse_subject(raw).repeats
+    assert (settings.min_share, settings.near_min_words, settings.fail_on_new, settings.min_words) == (0.2, 10, True, 4)
+
+
+@pytest.mark.parametrize(
+    ("repeats", "message"),
+    [
+        ({"min_shar": 0.2}, "repeats.min_shar is not a known setting"),
+        ({"min_share": 0}, "repeats.min_share must be a number above 0"),
+        ({"near_jaccard": 1.5}, "repeats.near_jaccard must be a number above 0"),
+        ({"min_words": 2.5}, "repeats.min_words must be a whole number"),
+        ({"min_groups": True}, "repeats.min_groups must be a whole number"),
+        ({"fail_on_new": "yes"}, "repeats.fail_on_new must be true or false"),
+        (["min_share"], "repeats must be a mapping"),
+    ],
+)
+def test_repeat_settings_are_validated(repeats, message):
+    raw = copy.deepcopy(RAW)
+    raw["repeats"] = repeats
+    with pytest.raises(SubjectError, match=message):
+        parse_subject(raw)
