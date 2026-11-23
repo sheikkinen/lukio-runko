@@ -19,7 +19,7 @@ def time_tag(value: object) -> str:
 
 def timing_text(topic: Topic) -> str:
     timing = topic.meta.get("suggested_timing") or {}
-    return f"{timing.get('year')}. vuosi, {timing.get('term')} (esimerkki, koulu päättää)"
+    return f"{timing.get('year')}. vuosi, {timing.get('term')}"
 
 
 def render_section(section: Section, ident: str, figures: str = "") -> str:
@@ -144,7 +144,7 @@ def yearly_facts_list(topic: Topic, data: SiteData) -> str:
             f"Tarkista ajantasainen tieto: {esc(fact.get('publisher', ''))}</a>. "
             f"Luettu {time_tag(fact.get('read'))}.</li>"
         )
-    return f"<h3>Muuttuu vuosittain</h3>\n<p>Näitä tietoja ei kopioida tälle sivulle. Katso arvo virallisesta lähteestä.</p>\n<ul>{''.join(items)}</ul>"
+    return f"<h3>Muuttuu vuosittain</h3>\n<ul>{''.join(items)}</ul>"
 
 
 def meta_list(ctx: Ctx, data: SiteData, topic: Topic, lesson: bool) -> str:
@@ -194,7 +194,7 @@ def tick_block(ctx: Ctx, topic: Topic) -> str:
     return (
         '<p class="tick" data-js-only hidden>'
         f'<button type="button" class="button" data-step-toggle="{esc(topic.id)}" aria-pressed="false">Merkitse tehdyksi</button> '
-        '<span class="hint">Merkintä tallentuu vain tähän selaimeen, kun painat painiketta. '
+        '<span class="hint">'
         f'<a href="{ctx.link("polku")}">Itseopiskelupolku ja omien tietojen tyhjennys</a></span></p>'
     )
 

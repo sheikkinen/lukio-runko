@@ -106,3 +106,4 @@ would require multiple rounds of verification." So:
   too… otherwise never repeat").
 - 2026-11-22: section 7, what generated work tends to get wrong (the operator's notes).
 - 2026-11-22: the norm ledger, `docs/norm-ledger.md`, linked from sections 4 and 5.
+- 2026-11-23: repeated per-page notes are said once (norm-ledger row 5, operator: "Remove repeats")

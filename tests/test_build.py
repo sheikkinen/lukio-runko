@@ -152,3 +152,18 @@ def test_card_links_show_on_the_topic_card_and_need_a_read_date(tmp_path):
     assert '<a href="https://example.org/tarina?ch=1">Visual novel</a>' in card
     write_topic(root, curriculum=codes, card_links=[{"label": "Visual novel", "url": url}], official_links=[])
     assert any("card link" in p.message for p in errors(build_site(root, out, today=TODAY)))
+
+
+def test_topic_pages_do_not_repeat_site_wide_notes(tmp_path):
+    """Norm-ledger row 5: the storage note lives on the path page, the yearly facts list speaks for itself."""
+    root = make_root(tmp_path)
+    codes = list(yaml.safe_load((root / "data" / "curriculum.yaml").read_text(encoding="utf-8"))["codes"])
+    write_topic(root, curriculum=codes, yearly_facts=["ytl_exam_dates"])
+    build_site(root, root / "_site", today=TODAY)
+    student = (root / "_site/op1/01-testi/index.html").read_text(encoding="utf-8")
+    assert "<h3>Muuttuu vuosittain</h3>\n<ul>" in student
+    assert "Tarkista ajantasainen tieto" in student
+    assert "ei kopioida" not in student
+    assert "tallentuu" not in student
+    assert "(esimerkki, koulu päättää)" not in student
+    assert re.search(r'<span class="hint"><a href="[^"]*polku/?[^"]*">Itseopiskelupolku ja omien tietojen tyhjennys</a>', student)

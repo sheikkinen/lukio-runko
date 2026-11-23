@@ -12,7 +12,7 @@ browser, and loads nothing from other hosts.
 ## Install
 
 ```bash
-python -m pip install "lukio-runko @ git+https://github.com/sheikkinen/lukio-runko@v0.5.0"
+python -m pip install "lukio-runko @ git+https://github.com/sheikkinen/lukio-runko@v0.5.1"
 ```
 
 A subject site pins a tag in its `requirements.txt`. For work on the engine itself, clone it and install it
