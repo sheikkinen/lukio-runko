@@ -94,7 +94,11 @@ would require multiple rounds of verification." So:
   list that decides meaning.
 - **Plan several verification rounds** by different agents, each against the basis, and the operator's review for
   language and cultural norms. One judge's acceptance is not the end of review.
-- The process notes are in `docs/diary/2026-11-22-process-lessons.md`.
+- **Feedback that does not wait for the operator.** A check names its ground truth: the site page, a lexicon, a
+  corpus, YTL's released exams, planted defects or content hashes. The operator decides norms and taste only where no
+  outside source settles them (operator, 2026-11-24: "you rely too much on me as the ground truth"). Model review
+  findings are candidates, not defects. Plan: `docs/feedback-loops-plan.md`.
+- The process notes are in `docs/diary/2026-11-22-process-lessons.md` and `docs/diary/2026-11-24-ground-truth.md`.
 
 ## Changes
 
@@ -107,3 +111,5 @@ would require multiple rounds of verification." So:
 - 2026-11-22: section 7, what generated work tends to get wrong (the operator's notes).
 - 2026-11-22: the norm ledger, `docs/norm-ledger.md`, linked from sections 4 and 5.
 - 2026-11-23: repeated per-page notes are said once (norm-ledger row 5, operator: "Remove repeats")
+- 2026-11-24: section 7 names checks with an outside ground truth and points to the feedback-loop plan (operator:
+  "Yes, do it")
