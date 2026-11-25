@@ -75,4 +75,11 @@ rows), and taste. None of the seven checks above needs a verdict from the operat
 
 ## Implementation notes
 
-(none yet)
+- 2026-11-24, check 4 pilot with SemFi (`docs/research/2026-11-24-calque-pilot.md`): planted calques separate from
+  native phrases where scorable, but parser mismatch with the reference makes the lists noisy; repetition ("Aivan.",
+  "Oikein.") is the clearest signal.
+- 2026-11-25, check 4 second pilot with a same-parser Projekti Lönnrot reference
+  (`docs/research/2026-11-25-same-parser-pilot.md`): no calque detection at 2 million words; modern text shows about
+  2 points more rare pairs than old native text, cause open (era, register or English influence). Recommendation:
+  keep keyness as a repetition check, put the effort into check 6, seeded with 53 documented calques
+  (`lukio-data/pilot2/documented.json`).
