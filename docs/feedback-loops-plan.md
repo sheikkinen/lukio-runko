@@ -83,3 +83,8 @@ rows), and taste. None of the seven checks above needs a verdict from the operat
   2 points more rare pairs than old native text, cause open (era, register or English influence). Recommendation:
   keep keyness as a repetition check, put the effort into check 6, seeded with 53 documented calques
   (`lukio-data/pilot2/documented.json`).
+- 2026-11-25, check 6 first pilot (`docs/research/2026-11-25-planted-defects-pilot.md`): 14 defect types and 3
+  controls planted in the nine pilot chapters. The explicit reviewer names about three quarters (Haiku 77%, Sonnet
+  82%), always the inserted apparatus, seldom calques; trace_check catches wrong codes and unbased graded choices,
+  repeat_check nothing in one chapter. Next: deterministic checks for help lines, 112, content notes and praise;
+  checks 2 and 3 for services, numbers and misspellings; plant in context and repeat runs.
